@@ -1,0 +1,55 @@
+from user301_dZJL5znAdk_0 import Vector
+from user301_35na3iAwqQ_0 import RegularPolygon
+from user303_OHTLTXLRlz_5 import Particle
+
+import simplegui
+
+CANVAS_WIDTH = 500
+CANVAS_HEIGHT = 500
+
+
+gun = RegularPolygon(2, Vector(350, 150), 30)
+gun1 = RegularPolygon(2, Vector(150, 150), 30)
+gun2 = RegularPolygon(2, Vector(250, 310), 30)
+
+timer = simplegui.create_timer(300, timer_handler)
+
+
+
+particles = []
+
+def draw(canvas):
+    
+    p = Particle(gun.pos + gun.generator, gun.generator.getNormalized())
+    particles.append(p)
+    q = Particle(gun1.pos + gun1.generator, gun1.generator.getNormalized())
+    particles.append(q)
+    r = Particle(gun2.pos + gun2.generator, gun2.generator.getNormalized())
+    particles.append(r)
+    
+        
+        
+
+    for p in particles:
+        p.draw(canvas)
+        p.update()
+        
+    
+    for q in particles:
+        q.draw(canvas)
+        q.update()
+    
+    for r in particles:
+        r.draw(canvas)
+        r.update()
+        
+    gun.draw(canvas)
+    gun.drawGenerator(canvas)
+    gun1.draw(canvas)
+    gun1.drawGenerator(canvas)
+    gun2.draw(canvas)
+    gun2.drawGenerator(canvas)
+
+frame = simplegui.create_frame('Control', CANVAS_WIDTH, CANVAS_HEIGHT)
+frame.set_draw_handler(draw)
+frame.start()
