@@ -12,27 +12,29 @@ gun = RegularPolygon(2, Vector(350, 150), 30)
 gun1 = RegularPolygon(2, Vector(150, 150), 30)
 gun2 = RegularPolygon(2, Vector(250, 310), 30)
 
-timer = simplegui.create_timer(300, timer_handler)
-
-
 
 particles = []
 
 def draw(canvas):
+    global counter
     
     p = Particle(gun.pos + gun.generator, gun.generator.getNormalized())
-    particles.append(p)
+    if (counter % 50 == 0):
+        particles.append(p)
     q = Particle(gun1.pos + gun1.generator, gun1.generator.getNormalized())
-    particles.append(q)
+    if (counter % 50 == 0):
+        particles.append(q)
     r = Particle(gun2.pos + gun2.generator, gun2.generator.getNormalized())
-    particles.append(r)
-    
+    if (counter % 50 == 0):
+        particles.append(r)
+    counter = counter + 1
         
         
 
     for p in particles:
         p.draw(canvas)
         p.update()
+
         
     
     for q in particles:
@@ -52,4 +54,6 @@ def draw(canvas):
 
 frame = simplegui.create_frame('Control', CANVAS_WIDTH, CANVAS_HEIGHT)
 frame.set_draw_handler(draw)
+counter = 0
 frame.start()
+
