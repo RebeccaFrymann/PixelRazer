@@ -183,9 +183,9 @@ class Keyboard:
         self.character = character
 
     def keyDown(self, key):
-        if (key == simplegui.KEY_MAP['right'] and self.character.pos.getX() < 710):
+        if (key == simplegui.KEY_MAP['right']):
             self.right = True
-        if (key == simplegui.KEY_MAP['left'] and self.character.pos.getX() > 25):
+        if (key == simplegui.KEY_MAP['left']):
             self.left = True
         if key == simplegui.KEY_MAP['up']:
             self.up = True
@@ -220,7 +220,7 @@ class Interaction:
     def update(self):
         global back
         global left
-        if self.keyboard.right:
+        if (self.keyboard.right and self.character.pos.getX() <= 710):
             self.character.vel.add(Vector(1, 0))
             right = True
             downF = False
@@ -229,7 +229,7 @@ class Interaction:
             timerR.stop()
             right = False
 
-        if self.keyboard.left:
+        if (self.keyboard.left and self.character.pos.getX() >= 25):
             self.character.vel.add(Vector(-1, 0))
             timerL.start()
             downF = False
