@@ -1,34 +1,66 @@
-from user301_kOICjXGLxt_0 import Vector
-
-try:
-    import simplegui
-except ImportError:
-    import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
+from user301_dZJL5znAdk_0 import Vector
+from user301_35na3iAwqQ_0 import RegularPolygon
+from user303_OHTLTXLRlz_5 import Particle
+import simplegui
 
 ########
 # Side (RIGHT) view of character #
-SIDE_WIDTH = 800 / 4
-SIDE_HEIGHT = 600 / 3
-SIDE_CENTER = [SIDE_WIDTH/2, SIDE_HEIGHT/2]
-SIDE_SIZE = [SIDE_WIDTH, SIDE_HEIGHT]
-SIDE_DIM = [4, 3]
-side_image = simplegui.load_image("https://i.imgur.com/JnPVeWH.png")
+RIGHT_WIDTH = 1000 / 4
+RIGHT_HEIGHT = 500 / 2
+RIGHT_CENTER = [RIGHT_WIDTH/2, RIGHT_HEIGHT/2]
+RIGHT_SIZE = [RIGHT_WIDTH, RIGHT_HEIGHT]
+RIGHT_DIM = [4, 2]
+right_image = simplegui.load_image("https://i.imgur.com/caAvbvK.png")
 
 # Side(LEFT) view of character#
-LEFT_WIDTH = 800/4
-LEFT_HEIGHT = 600/3
+LEFT_WIDTH = 1000/4
+LEFT_HEIGHT = 500/2
 LEFT_CENTER = [LEFT_WIDTH/2, LEFT_HEIGHT/2]
 LEFT_SIZE = [LEFT_WIDTH, LEFT_HEIGHT]
-LEFT_DIM = [4,3]
-left_image = simplegui.load_image("https://i.imgur.com/4cDBV2T.png")
+LEFT_DIM = [4,2]
+left_image = simplegui.load_image("https://i.imgur.com/WgnPT6V.png")
 
 # Back view of character #
-BACK_WIDTH = 800/4
-BACK_HEIGHT = 600/3
+BACK_WIDTH = 1000/4
+BACK_HEIGHT = 500/2
 BACK_CENTER = [BACK_WIDTH/2, BACK_HEIGHT/2]
 BACK_SIZE = [BACK_WIDTH, BACK_HEIGHT]
-BACK_DIM = [4,3]
-back_image = simplegui.load_image("https://i.imgur.com/jrnua27.png")
+BACK_DIM = [4,2]
+back_image = simplegui.load_image("https://i.imgur.com/nQW0p1G.png")
+
+# Front view of character#
+FRONT_WIDTH = 1000/4
+FRONT_HEIGHT = 500/2
+FRONT_CENTER = [FRONT_WIDTH/2, FRONT_HEIGHT/2]
+FRONT_SIZE = [FRONT_WIDTH, FRONT_HEIGHT]
+FRONT_DIM = [4,2]
+front_image = simplegui.load_image("https://i.imgur.com/haAhGWE.png")
+## Character attck ##
+ATTACK_WIDTH = 1000/4
+ATTACK_HEIGHT = 500/2
+ATTACK_CENTER = [ATTACK_WIDTH/2, ATTACK_HEIGHT/2]
+ATTACK_SIZE = [ATTACK_WIDTH, ATTACK_WIDTH]
+ATTACK_DIM = [4,2]
+attack_image = simplegui.load_image("https://i.imgur.com/1HBjEey.png")
+
+#Wisp
+WISP_WIDTH = 1000 / 4
+WISP_HEIGHT = 500 / 2
+WISP_CENTER = [WISP_WIDTH/2, WISP_HEIGHT/2]
+WISP_SIZE = [WISP_WIDTH, WISP_HEIGHT]
+WISP_DIM = [4, 2]
+wisp_image = simplegui.load_image("https://i.imgur.com/tz5HfML.png")
+#Wisp 2
+WISP2_WIDTH = 400 / 4
+WISP2_HEIGHT = 200 / 2
+WISP2_CENTER = [WISP2_WIDTH/2, WISP2_HEIGHT/2]
+WISP2_SIZE = [WISP2_WIDTH, WISP2_HEIGHT]
+WISP2_DIM = [4, 2]
+wisp2_image = simplegui.load_image("https://i.imgur.com/Hv0QHvY.png")
+
+#wisp shoot
+gun = RegularPolygon(2, Vector(490, 600), 10)
+gun1 = RegularPolygon(2, Vector(90,563), 10)
 
 # Background image (Shilling ground floor) #
 WIDTH = 768
@@ -38,63 +70,116 @@ image_size = (750, 750)
 pos = [384, 384]
 image = simplegui.load_image("https://i.imgur.com/bFyXh2P.png")
 
+#Shilling first floor#
+WIDTHf = 768
+HEIGHTf = 768
+image_centerf = (384, 384)
+image_sizef = (750, 750)
+posf = [384, 384]
+imagef = simplegui.load_image("https://i.imgur.com/QJXOd6P.png")
+
 
 #########
-global back 
-global left
-back = False
+##global variables##
+End = False
+Playing = False
+score = 0
+kill = 0
+global lives 
+lives = 3
+wisp = True
+playerKill = False
+
 def timer_handler():
     global counter
     global back
     global left
-    if (back  == False and left == False):
-        counter = (counter + 1) % (SIDE_DIM[0] * SIDE_DIM[1])
-    if (back == True):
-        counter = (counter + 1) % (BACK_DIM[0] * BACK_DIM[1])   
-    if (left == True ):
-        counter = (counter + 1) % (LEFT_DIM[0] * LEFT_DIM[1])
+    global down
+    global space
+    down = False
     
-class Wheel:
-    def __init__(self, pos, radius=10):
+    if (wisp == True):
+        counter = (counter + 1) % (WISP_DIM[0] * WISP_DIM[1])
+    if ((back == False and left == False and down == False)):
+        counter = (counter + 1) % (FRONT_DIM[0] * FRONT_DIM[1])
+    if (back == False and down == False and left == False):
+        counter = (counter + 1) % (RIGHT_DIM[0] * RIGHT_DIM[1])
+    if (back == True ):
+        counter = (counter + 1) % (BACK_DIM[0] * BACK_DIM[1])   
+    if (left == True and back == False and down == False ):
+        counter = (counter + 1) % (LEFT_DIM[0] * LEFT_DIM[1])
+
+class Character:
+    def __init__(self, pos):
         self.pos = pos
         self.vel = Vector()
-        self.radius = max(radius, 10)
-        self.colour = 'White'
+    
+    def attack(self):
+        attack_index = [counter % ATTACK_DIM[0], counter // ATTACK_DIM[0]]
+        canvas.draw_image(attack_image,
+                          [ATTACK_CENTER[0] + attack_index[0] * ATTACK_SIZE[0],
+                           ATTACK_CENTER[1] + attack_index[1] * ATTACK_SIZE[1]],
+                           ATTACK_SIZE, self.pos.getP(), ATTACK_SIZE)
 
     def draw(self, canvas):
-        global back
         global counter
+        global back
         global left
-        
-        if (back == False and left == False):
-            side_index = [counter% SIDE_DIM[0], counter // SIDE_DIM[0]]
-            canvas.draw_image(side_image, 
-                             [SIDE_CENTER[0] + side_index[0] * SIDE_SIZE[0], 
-                              SIDE_CENTER[1] + side_index[1] * SIDE_SIZE[1]], 
-                              SIDE_SIZE, self.pos.getP(), SIDE_SIZE)
+        global down
+        global space
+        down = False
+
+        if((down == True)):
+            front_index = [counter % FRONT_DIM[0], counter // FRONT_DIM[0]]
+            canvas.draw_image(front_image, 
+                            [FRONT_CENTER[0] + front_index[0] * FRONT_SIZE[0], 
+                             FRONT_CENTER[1] + front_index[1] * FRONT_SIZE[1]], 
+                             FRONT_SIZE, self.pos.getP(), FRONT_SIZE)
+
+        if (left == False and back == False and down == False):
+            right_index = [counter% RIGHT_DIM[0], counter // RIGHT_DIM[0]]
+            canvas.draw_image(right_image, 
+                             [RIGHT_CENTER[0] + right_index[0] * RIGHT_SIZE[0], 
+                              RIGHT_CENTER[1] + right_index[1] * RIGHT_SIZE[1]], 
+                              RIGHT_SIZE, self.pos.getP(), RIGHT_SIZE)
         if(back == True):
             back_index = [counter % BACK_DIM[0], counter // BACK_DIM[0]]
             canvas.draw_image(back_image, 
                             [BACK_CENTER[0] + back_index[0] * BACK_SIZE[0], 
                              BACK_CENTER[1] + back_index[1] * BACK_SIZE[1]], 
                              BACK_SIZE, self.pos.getP(), BACK_SIZE)
-        if (left == True):
+        if (left == True and back == False and down == False):
             left_index = [counter % LEFT_DIM[0], counter // LEFT_DIM[0]]
             canvas.draw_image(left_image,
                              [LEFT_CENTER[0] + left_index[0] * LEFT_SIZE[0],
                               LEFT_CENTER[1] + left_index[1] * LEFT_SIZE[1]],
                               LEFT_SIZE, self.pos.getP(), LEFT_SIZE)
-            
+    
     def update(self):
         self.pos.add(self.vel)
         self.vel.multiply(0.15)
-    
+class Wisp:
+    def _init_(self):
+        self.pos = Vector(350, 100)
+    def draw(self, canvas):
+        wisp_index = [counter % WISP_DIM[0], counter // WISP_DIM[0]]
+        canvas.draw_image(wisp_image, 
+                        [WISP_CENTER[0] + wisp_index[0] * WISP_SIZE[0], 
+                        WISP_CENTER[1] + wisp_index[1] * WISP_SIZE[1]], 
+                        WISP_SIZE, (90, 563), WISP_SIZE)
+        wisp2_index = [counter % WISP2_DIM[0], counter // WISP2_DIM[0]]
+        canvas.draw_image(wisp2_image, 
+                        [WISP2_CENTER[0] + wisp2_index[0] * WISP2_SIZE[0], 
+                        WISP2_CENTER[1] + wisp2_index[1] * WISP2_SIZE[1]], 
+                        WISP2_SIZE, (490, 600), WISP2_SIZE)
+        
 class Keyboard:
     def __init__(self):
         self.right = False
         self.left = False
         self.up = False
         self.down = False
+        self.space = False
 
     def keyDown(self, key):
         if key == simplegui.KEY_MAP['right']:
@@ -105,7 +190,9 @@ class Keyboard:
             self.up = True
         if key == simplegui.KEY_MAP['down']:
             self.down = True
-
+        if key == simplegui.KEY_MAP['space']:
+            self.space = True
+            
     def keyUp(self, key):
         if key == simplegui.KEY_MAP['right']:
             self.right = False
@@ -115,57 +202,128 @@ class Keyboard:
             self.up = False
         if key == simplegui.KEY_MAP['down']:
             self.down = False
+        if key == simplegui.KEY_MAP['space']:
+            self.space = False
+            
 timerR = simplegui.create_timer(100, timer_handler)
-timerU = simplegui.create_timer(50, timer_handler)
+timerU = simplegui.create_timer(100, timer_handler)
 timerL = simplegui.create_timer(100, timer_handler)
+timerD = simplegui.create_timer(100, timer_handler)
+timerW1 = simplegui.create_timer(100, timer_handler)
 
 class Interaction:
-    def __init__(self, wheel, keyboard):
-        self.wheel = wheel
+    def __init__(self, character, keyboard):
+        self.character = character
         self.keyboard = keyboard
 
     def update(self):
         global back
         global left
         if self.keyboard.right:
-            self.wheel.vel.add(Vector(1, 0))
+            self.character.vel.add(Vector(1, 0))
+            right = True
+            downF = False
             timerR.start()
         else:
             timerR.stop()
-            
+            right = False
+
         if self.keyboard.left:
-            self.wheel.vel.add(Vector(-1, 0))
+            self.character.vel.add(Vector(-1, 0))
             timerL.start()
+            downF = False
             left = True
         else:
             timerL.stop()
             left = False
-            
+
         if self.keyboard.up:
-            self.wheel.vel.add(Vector(0,-1))
+            self.character.vel.add(Vector(0,-1))
             timerU.start()
+            downF = False
             back = True
         else:
             timerU.stop()
             back = False
-            
+
         if self.keyboard.down:
-            self.wheel.vel.add(Vector(0,1))
+            self.character.vel.add(Vector(0,1))
+            down = True
+            timerD.start()
+        else:
+            down = False
+            timerD.stop()
+        if self.keyboard.space:
+            space = True
+        else:
+            space = False
+            
 
 kbd = Keyboard()
-wheel = Wheel(Vector(130,80), 40)
-inter = Interaction(wheel, kbd)
+c = Character(Vector(130,80))
+inter = Interaction(c, kbd)
+particles = []
+w1 = Wisp()
 
+scores = 0
 def draw(canvas):
-    canvas.draw_image(image, image_center, image_size, pos, image_size)
+    global counter1
+    global rotate
+    global lives
+    ### Drawing background and character###
+    if (c.pos == Vector(130, 50)):
+        canvas.draw_image(imagef, image_centerf, image_sizef, posf, image_sizef)
+        c.pos = (130, 688)
+    else:
+        canvas.draw_image(image, image_center, image_size, pos, image_size)
     inter.update()
-    wheel.update()
-    wheel.draw(canvas)
+    c.update()
+    c.draw(canvas)
+    ###Wisps draw and shoot###
+    global counter1
+    global rotate
+    global rotate2
+    if (rotate < 1):
+        gun.generator.rotate(270)
+        rotate = 1
+    p = Particle(gun.pos + gun.generator, gun.generator.getNormalized())
+    if (counter1 % 50 == 0):
+        particles.append(p)
+    for p in particles:
+        p.draw(canvas)
+        p.update()
+    if (p.pos == c.pos):
+        lives = lives - 1
+    gun.draw(canvas)
+    gun.drawGenerator(canvas)
+    counter1 = counter1 + 1
+    ##Wisp2##
+    if (rotate2 < 1):
+        gun1.generator.rotate(90)
+        rotate2 = 1
+    p = Particle(gun1.pos + gun1.generator, gun1.generator.getNormalized())
+    if (counter1 % 75 == 0):
+        particles.append(p)
+    for p in particles:
+        p.draw(canvas)
+        p.update()
+    gun1.draw(canvas)
+    gun1.drawGenerator(canvas)
+    w1.draw(canvas)
+    ###Scores###
+    canvas.draw_text(str(int(scores)), [40, 50], 10, "White")
+    canvas.draw_text("Score: ", [10, 50], 10, "White")
+    canvas.draw_text(str(int(lives)), [40,70], 10, "White")
+    canvas.draw_text("Lives: ", [10, 70], 10, "White")
 
-frame = simplegui.create_frame('GAME', WIDTH, HEIGHT)
+frame = simplegui.create_frame('GAME', WIDTH-40, HEIGHT-40)
 frame.set_draw_handler(draw)
 frame.set_keydown_handler(kbd.keyDown)
 frame.set_keyup_handler(kbd.keyUp)
 counter = 0
+counter1 = 0
+rotate = 0
+rotate2 = 0
 
 frame.start()
+#timerW1.start()
