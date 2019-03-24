@@ -58,14 +58,7 @@ WISP_HEIGHT = 500 / 2
 WISP_CENTER = [WISP_WIDTH/2, WISP_HEIGHT/2]
 WISP_SIZE = [WISP_WIDTH, WISP_HEIGHT]
 WISP_DIM = [4, 2]
-wisp_image = simplegui.load_image("https://i.imgur.com/tz5HfML.png")
-#Wisp 2
-WISP2_WIDTH = 400 / 4
-WISP2_HEIGHT = 200 / 2
-WISP2_CENTER = [WISP2_WIDTH/2, WISP2_HEIGHT/2]
-WISP2_SIZE = [WISP2_WIDTH, WISP2_HEIGHT]
-WISP2_DIM = [4, 2]
-wisp2_image = simplegui.load_image("https://i.imgur.com/Hv0QHvY.png")
+wisp_image = simplegui.load_image("https://imgur.com/49MKjGn.png")
 
 #wisp shoot
 gun = RegularPolygon(2, Vector(490, 600), 10)
@@ -355,7 +348,7 @@ class BallSet():
     def cCollide(self, character):
         for b1 in self.ballSet:
             if b1.collides(c):
-                print(c.getAttack())
+                #print(c.getAttack())
                 
                 if(not c.space):
                     global lives
@@ -375,6 +368,9 @@ class BallSet():
                     scores += 100
                     b1.pos.x = 10000
                     b1.pos.y = 10000
+                    b1.vel.x = random.uniform(0, 1)
+                    b1.vel.y = random.uniform(0, 1)
+
                     
                     
     def getLives(self):
